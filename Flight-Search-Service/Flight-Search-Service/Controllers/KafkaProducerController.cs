@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Flight_Search_Service.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class KafkaProducerController : ControllerBase
 {
     private readonly ProducerConfig _producerConfig;
