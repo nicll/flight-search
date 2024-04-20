@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Flight_Search_Service</RootNamespace>
+    <RootNamespace>FlightImportService</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

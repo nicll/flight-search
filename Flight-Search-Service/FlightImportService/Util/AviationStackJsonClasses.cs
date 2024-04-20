@@ -1,4 +1,4 @@
-﻿namespace Flight_Search_Service.Util;
+﻿namespace FlightImportService.Util;
 
 public class Departure
 {

@@ -1,9 +1,9 @@
 ﻿using Confluent.Kafka;
-using Flight_Search_Service.Util;
+using FlightImportService.Util;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
-namespace Flight_Search_Service.Controllers;
+namespace FlightImportService.Controllers;
 
 [ApiController]
 [Route("api/Import")]
