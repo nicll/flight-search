@@ -40,7 +40,7 @@ public class AviationstackController : ControllerBase
                     var flightJson = JsonSerializer.Serialize(flight);
                     var message = new Message<string, string>
                     {
-                        Key = flight.Aircraft.Registration,
+                        Key = flight.Aircraft.Registration.ToUpperInvariant(),
                         Value = flightJson
                     };
                     await _kafkaProducer.ProduceAsync(_topicName, message);

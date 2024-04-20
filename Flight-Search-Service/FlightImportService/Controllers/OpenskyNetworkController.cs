@@ -42,7 +42,7 @@ public class OpenskyNetworkController : ControllerBase
                     var flightJson = JsonSerializer.Serialize(state);
                     var message = new Message<string, string>
                     {
-                        Key = state.Callsign,
+                        Key = state.Callsign!.ToUpperInvariant(),
                         Value = flightJson
                     };
                     await _kafkaProducer.ProduceAsync(_topicName, message);

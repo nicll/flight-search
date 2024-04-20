@@ -1,0 +1,6 @@
+@FlightDatabaseImportService_HostAddress = http://localhost:5054
+
+GET {{FlightDatabaseImportService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
