@@ -58,8 +58,16 @@ public class Flight
     public Arrival Arrival { get; set; }
     public Airline Airline { get; set; }
     public FlightInfo FlightInfo { get; set; }
-    public object Aircraft { get; set; }
+    public Aircraft Aircraft { get; set; }
     public object Live { get; set; }
+}
+
+public class Aircraft
+{
+    public string Registration { get; set; }
+    public string Iata { get; set; }
+    public string Icao { get; set; }
+    public string Icao24 { get; set; }
 }
 
 public class FlightInfo

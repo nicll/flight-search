@@ -14,6 +14,7 @@ public class ImportController : ControllerBase
     private readonly string _topicName = ""; //missing topic name
     private readonly HttpClient _httpClient;
     private readonly IProducer<string, string> _kafkaProducer;
+
     public ImportController(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient();
@@ -23,6 +24,7 @@ public class ImportController : ControllerBase
         };
         _kafkaProducer = new ProducerBuilder<string, string>(config).Build();
     }
+
     [HttpGet("ImportAviationStackData")]
     public async Task<IActionResult> ImportAviationStackData()
     {
@@ -41,7 +43,7 @@ public class ImportController : ControllerBase
                     var flightJson = JsonConvert.SerializeObject(flight);
                     var message = new Message<string, string>
                     {
-                        Key = null,
+                        Key = flight.Aircraft.Registration,
                         Value = flightJson
                     };
                     await _kafkaProducer.ProduceAsync(_topicName, message);
@@ -78,7 +80,7 @@ public class ImportController : ControllerBase
                     var flightJson = JsonConvert.SerializeObject(state);
                     var message = new Message<string, string>
                     {
-                        Key = null,
+                        Key = state.Callsign,
                         Value = flightJson
                     };
                     await _kafkaProducer.ProduceAsync(_topicName, message);
@@ -105,8 +107,8 @@ public class ImportController : ControllerBase
                 Icao24 = stateArray[0],
                 Callsign = stateArray[1],
                 OriginCountry = stateArray[2],
-                TimePosition = stateArray[3] ?? null,
-                LastContact = stateArray[4] ?? null,
+                TimePosition = stateArray[3],
+                LastContact = stateArray[4],
                 Longitude = stateArray[5],
                 Latitude = stateArray[6],
                 BaroAltitude = stateArray[7],
