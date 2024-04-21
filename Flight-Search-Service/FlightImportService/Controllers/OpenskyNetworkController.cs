@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using Confluent.Kafka;
-using FlightImportService.Util;
+using FlightSearchService.Models.External;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightImportService.Controllers;

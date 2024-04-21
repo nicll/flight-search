@@ -1,4 +1,4 @@
-﻿namespace FlightImportService.Util;
+﻿namespace FlightSearchService.Models.External;
 
 public class State
 {

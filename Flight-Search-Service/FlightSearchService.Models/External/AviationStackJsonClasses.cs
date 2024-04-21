@@ -1,4 +1,4 @@
-﻿namespace FlightImportService.Util;
+﻿namespace FlightSearchService.Models.External;
 
 public class Departure
 {
@@ -52,14 +52,14 @@ public class Codeshared
 
 public class Flight
 {
-    public string Flight_date { get; set; }
+    public DateTime Flight_date { get; set; }
     public string Flight_status { get; set; }
     public Departure Departure { get; set; }
     public Arrival Arrival { get; set; }
     public Airline Airline { get; set; }
     public FlightInfo FlightInfo { get; set; }
     public Aircraft Aircraft { get; set; }
-    public object Live { get; set; }
+    public Live Live { get; set; }
 }
 
 public class Aircraft
@@ -68,6 +68,18 @@ public class Aircraft
     public string Iata { get; set; }
     public string Icao { get; set; }
     public string Icao24 { get; set; }
+}
+
+public class Live
+{
+    public DateTime Updated { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+    public float Altitude { get; set; }
+    public float Direction { get; set; }
+    public float SpeedHorizontal { get; set; }
+    public float SpeedVertical { get; set; }
+    public bool IsGround { get; set; }
 }
 
 public class FlightInfo

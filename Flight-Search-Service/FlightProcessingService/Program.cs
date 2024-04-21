@@ -7,6 +7,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHostedService<FlightProcessingService.Workers.AviationstackWorker>();
+builder.Services.AddHostedService<FlightProcessingService.Workers.OpenskyNetworksWorker>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
