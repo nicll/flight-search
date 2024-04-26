@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightImportService", "Flig
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightProcessingService", "FlightProcessingService\FlightProcessingService.csproj", "{18C78978-0059-4864-9D8E-8127A7679837}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightDatabaseImportService", "FlightDatabaseImportService\FlightDatabaseImportService.csproj", "{AE202443-CEC8-4AF9-9842-906C33F1E11E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightDatabaseImportService", "FlightDatabaseImportService\FlightDatabaseImportService.csproj", "{AE202443-CEC8-4AF9-9842-906C33F1E11E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightSearchService.Models", "FlightSearchService.Models\FlightSearchService.Models.csproj", "{F39EE289-F19C-4C60-99C5-3487BE368E47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightSearchService.Models", "FlightSearchService.Models\FlightSearchService.Models.csproj", "{F39EE289-F19C-4C60-99C5-3487BE368E47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightSearchWebService", "FlightSearchWebService\FlightSearchWebService.csproj", "{C79E2A1C-E73A-4114-9F40-1BCA8FD8506A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{F39EE289-F19C-4C60-99C5-3487BE368E47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F39EE289-F19C-4C60-99C5-3487BE368E47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F39EE289-F19C-4C60-99C5-3487BE368E47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C79E2A1C-E73A-4114-9F40-1BCA8FD8506A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C79E2A1C-E73A-4114-9F40-1BCA8FD8506A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C79E2A1C-E73A-4114-9F40-1BCA8FD8506A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C79E2A1C-E73A-4114-9F40-1BCA8FD8506A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
