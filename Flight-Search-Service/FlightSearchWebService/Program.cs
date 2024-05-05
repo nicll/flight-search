@@ -1,4 +1,6 @@
 using FlightSearchWebService.Components;
+using FlightDatabaseImportService;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services.AddDbContextPool<FlightDbContext>(opts => opts.UseNpgsql("User ID=postgres;Host=localhost;Port=5432;Database=flights;Pooling=true"));
+//builder.Services.AddBlazorBootstrap();
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+app.MapControllers();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -1,5 +1,8 @@
 ﻿@page "/weather"
+@using FlightDatabaseImportService
+@using FlightSearchService.Models.Internal
 @attribute [StreamRendering]
+@* @using BlazorBootstrap; *@
 
 <PageTitle>Weather</PageTitle>
 
@@ -13,31 +16,60 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+@*     <Grid TItem="AircraftStaticInfo"
+    Class="table table-hover table-bordered table-striped"
+          DataProvider="CustomersDataProvider"
+          AllowFiltering="true"
+          AllowPaging="true"
+          AllowSorting="true"
+          Responsive="true">
+
+        <GridColumn TItem="AircraftStaticInfo" HeaderText="CallSign" PropertyName="CallSign" SortString="CallSign" SortKeySelector="item => item.CallSign" FilterTextboxWidth="50" HeaderTextAlignment="Alignment.Center" TextAlignment="Alignment.Center">
+            @context.CallSign
+        </GridColumn>
+        <GridColumn TItem="AircraftStaticInfo" HeaderText="LastUpdated" PropertyName="LastUpdated" SortString="LastUpdated" SortKeySelector="item => item.LastUpdated" FilterTextboxWidth="80">
+            @context.LastUpdated
+        </GridColumn>
+        <GridColumn TItem="AircraftStaticInfo" HeaderText="Icao24" PropertyName="Icao24" SortString="Icao24" SortKeySelector="item => item.Icao24" FilterTextboxWidth="100">
+            @context.Icao24
+        </GridColumn>
+
+        </Grid> *@
 }
 
 @code {
+
+    // public requestHandler _customerService { get; set; } = default!;
+
+    // private async Task<GridDataProviderResult<AircraftStaticInfo>> CustomersDataProvider(GridDataProviderRequest<AircraftStaticInfo> request)
+    // {
+    //     // string sortString = "";
+    //     // SortDirection sortDirection = SortDirection.None;
+
+    //     // if (request.Sorting is not null && request.Sorting.Any())
+    //     // {
+    //     //     // Note: Multi column sorting is not supported at this moment
+    //     //     sortString = request.Sorting.FirstOrDefault()!.SortString;
+    //     //     sortDirection = request.Sorting.FirstOrDefault()!.SortDirection;
+    //     // }
+    //     // var result = await _customerService.GetData(request.Filters, request.PageNumber, request.PageSize, sortString, sortDirection, request.CancellationToken);
+    //     var result = _customerService.GetData(request.Filters, request.PageNumber, request.PageSize, request.CancellationToken);
+    //     return await Task.FromResult(new GridDataProviderResult<AircraftStaticInfo> { Data = result, TotalCount = result.Count() });
+    // }
+
     private WeatherForecast[]? forecasts;
+
+    // [Inject]
+    // public FlightDbContext context { get; set; }
+
+    // private static Random random = new Random();
+
+    // public static string GenerateRandomString(int length)
+    // {
+    //     const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    //     return new string(Enumerable.Repeat(chars, length)
+    //       .Select(s => s[random.Next(s.Length)]).ToArray());
+    // }
 
     protected override async Task OnInitializedAsync()
     {
@@ -52,6 +84,34 @@ else
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = summaries[Random.Shared.Next(summaries.Length)]
         }).ToArray();
+
+
+        // for (int i = 0; i < 1000; i++)
+        // {
+        //     var callSign = GenerateRandomString(10);
+        //     var lastupdated = DateTimeOffset.UtcNow;
+
+        //     var entity = new AircraftStaticInfo()
+        //         {
+        //             CallSign = callSign,
+        //             LastUpdated = DateTimeOffset.UtcNow,
+        //             Icao24 = GenerateRandomString(10)
+        //         };
+        //     context.Add(entity);
+        //     context.SaveChanges();
+        //         var entity2 = new AircraftDynamicInfo()
+        //             {
+        //                 CallSign = callSign,
+        //                 LastUpdated = lastupdated,
+        //                 Latitude = random.Next(100) + random.NextDouble(),
+        //                 Longitude = random.Next(100) + random.NextDouble(),
+        //                 Altitude = random.Next(5000) + random.NextDouble(),
+        //                 Direction = random.Next(100) + random.NextDouble()
+        //             };
+        //         context.Add(entity2);
+        //         context.SaveChanges();
+        //  }
+
     }
 
     private class WeatherForecast

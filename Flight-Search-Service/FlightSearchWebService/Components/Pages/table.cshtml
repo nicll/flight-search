@@ -1,0 +1,209 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@* @page "/weather" *@
+
+@page "/table"
+@using FlightSearchService.Models.Internal
+@* @inherits ComponentBase *@
+@* @using Microsoft.AspNetCore.Components *@
+@* @using Microsoft.AspNetCore.Components *@
+@using Microsoft.AspNetCore.Components
+@using Microsoft.JSInterop
+@inject HttpClient Http
+@attribute [StreamRendering]
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+
+@* @{ *@
+    <table style="background-color:#FFFFFF; border-style:inset; border-width:1px; border-color:#6D7B8D; padding:2px; width:100%; table-layout:fixed;" cellpadding="1" cellspacing="1">
+    <tr style="background-color:#2d364d ; color:#FFFFFF ; border-style:dashed; border-width:2px; border-color:0A2464 ;">
+        <td width="30" align="center"></td>
+        <td width="80" align="center">
+            CallSign
+        </td>
+        <td width="240" align="center">
+            LastUpdated
+        </td>
+        <td width="240" align="center">
+            ICAO
+        </td>
+    </tr>
+        <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;">
+            <td width="30" align="center"></td>
+            <td width="80" align="center">Filter :</td>
+            <td width="240" align="center">
+                <input width="70" onchange=@OnCallSignChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" />
+            </td>
+            <td width="240" align="center">
+                <input width="70" onchange=@OnLastUpdatedChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" />
+            </td>
+            <td width="120" align="center">
+                <input width="70" onchange=@OnICAOChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" />
+            </td>
+        </tr>
+</table>
+}
+@foreach (var singleData in data)
+{
+    <tr style="border-style: dashed; border-width: 2px; border-color:#659EC7;">
+        <td align="center" style="border: solid 1px#659EC7; padding: 5px; table-layout: fixed;">
+        </td>
+        <td align="center">
+            <span style="color:#9F000F">
+                @singleData.CallSign
+            </span>
+        </td>
+        <td align="center">
+            <span style="color:#9F000F">
+                @singleData.LastUpdated
+            </span>
+        </td>
+        <td align="center">
+            <span style="color:#9F000F">
+                @singleData.Icao24
+            </span>
+        </td>
+@*         <td align="center">
+            <span style="color:#9F000F">
+                @StudentMasters.Phone
+            </span>
+        </td>
+        <td align="center">
+            <span style="color:#9F000F">
+                @StudentMasters.Address
+            </span>
+        </td> *@
+    </tr>
+}
+@functions {
+    AircraftStaticInfo[] data;
+
+    int ids = 0;
+    int studentIDs = 0;
+
+    // protected async Task OnInitAsync()
+    // {
+    //     data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes");
+    // }
+
+    protected async Task OnInitializedAsync()
+    {
+        data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes");
+    }
+
+
+    // Sorting
+    protected async Task dataSorting(string SortColumn)
+    {
+        data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes/");
+
+        if (ids == 0)
+        {
+            ids = 1;
+
+            switch (SortColumn)
+            {
+                case "CallSign":
+                    data = data.OrderBy(x => x.CallSign).ToArray();
+                    break;
+                case "LastUpdated":
+                    data = data.OrderBy(x => x.LastUpdated).ToArray();
+                    break;
+                case "ICAO":
+                    data = data.OrderBy(x => x.Icao24).ToArray();
+                    break;
+
+            }
+        }
+        else
+        {
+            ids = 0;
+
+            switch (SortColumn)
+            {
+                case "CallSign":
+                    data = data.OrderByDescending(x => x.CallSign).ToArray();
+                    break;
+                case "LastUpdated":
+                    data = data.OrderByDescending(x => x.LastUpdated).ToArray();
+                    break;
+                case "ICAO":
+                    data = data.OrderByDescending(x => x.Icao24).ToArray();
+                    break;
+
+            }
+        }
+    }
+
+    // For Filtering by Student Name
+    void OnCallSignChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        filteringList(values, "StudentName");
+    }
+
+
+    // For Filtering by Email
+    void OnLastUpdatedChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        filteringList(values, "Email");
+    }
+
+
+    // For Filtering by Phone
+    void OnICAOChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        filteringList(values, "Phone");
+    }
+
+    // Filtering
+    protected async Task filteringList(String Value, string columnName)
+    {
+        data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes/");
+
+        if (Value.Trim().Length > 0)
+        {
+            switch (columnName)
+            {
+                case "CallSign":
+                    data = data.Where(x => x.CallSign.Contains(Value)).ToArray();
+                    break;
+                // case "LastUpdated":
+                //     data = data.Where(x => x.LastUpdated.Contains(Value)).ToArray();
+                //     break;
+                case "ICAO":
+                    data = data.Where(x => x.Icao24.Contains(Value)).ToArray();
+                    break;
+                default:
+                    data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes/");
+                    break;
+            }
+        }
+        else
+        {
+            data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes/");
+        }
+    }
+
+}
+
+@{
+    // Invoke the initialization method when the Razor page is initialized
+    await OnInitializedAsync();
+}
+
+

@@ -1,0 +1,305 @@
+﻿@page "/weatherNew"
+@using FlightDatabaseImportService
+@using FlightSearchService.Models.Internal
+@using Microsoft.AspNetCore.Components
+@using Microsoft.JSInterop
+@inject HttpClient Http
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+@* @using BlazorBootstrap; *@
+
+<PageTitle>Weather</PageTitle>
+
+<h1>Weather</h1>
+
+<p>This component demonstrates showing data.</p>
+
+@if (data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table style="background-color:#FFFFFF; border-style:inset; border-width:1px; border-color:#6D7B8D; padding:2px; width:100%; table-layout:fixed;" cellpadding="1" cellspacing="1">
+        <tr style="background-color:#2d364d ; color:#FFFFFF ; border-style:dashed; border-width:2px; border-color:0A2464 ;">
+            <td width="30" align="center"></td>
+            <td width="80" align="center">
+                
+            </td>
+            <td width="80" align="center">
+                CallSign
+            </td>
+            <td width="240" align="center">
+                LastUpdated
+            </td>
+            <td width="240" align="center">
+                ICAO
+            </td>
+        </tr>
+        <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;">
+            <td width="30" align="center"></td>
+            <td width="80" align="center">Filter :</td>
+            <td width="240" align="center">
+               @*  <input width="70" oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                @* <input width="70" onchange=@OnCallSignChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                <input width="70" onchange="@OnCallSignChanged" />
+            </td>
+            <td width="240" align="center">
+                @* <input width="70" oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                @* <input width="70" onchange=@OnLastUpdatedChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                @* <input width="70" onchange=@OnLastUpdatedChanged/> *@
+            </td>
+            <td width="120" align="center">
+                @* <input width="70" oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                @* <input width="70" onchange=@OnICAOChanged oninput="(this.dispatchEvent(new CustomEvent('change', {bubbles: true})))" /> *@
+                <input width="70" onchange=@OnICAOChanged/>
+            </td>
+        </tr>
+
+        @foreach (var singleData in data)
+        {
+            <tr style="border-style: dashed; border-width: 2px; border-color:#659EC7;">
+                <td align="center" style="border: solid 1px#659EC7; padding: 5px; table-layout: fixed;">
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.CallSign
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.LastUpdated
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Icao24
+                    </span>
+                </td>
+                @*         <td align="center">
+        <span style="color:#9F000F">
+        @StudentMasters.Phone
+        </span>
+        </td>
+        <td align="center">
+        <span style="color:#9F000F">
+        @StudentMasters.Address
+        </span>
+        </td> *@
+            </tr>
+        }
+    </table>
+}
+
+
+
+@code {
+
+    AircraftStaticInfo[] data;
+
+    int ids = 0;
+    int studentIDs = 0;
+
+    string Filter1 = "Test";
+
+    // protected async Task OnInitAsync()
+    // {
+    //     data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("/api/AircraftStaticInfoes");
+    // }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("https://localhost:7249/api/AircraftStaticInfoes");
+    }
+
+
+    // Sorting
+    // protected async Task dataSorting(string SortColumn)
+    // {
+    //     data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("https://localhost:7249/api/AircraftStaticInfoes");
+
+    //     if (ids == 0)
+    //     {
+    //         ids = 1;
+
+    //         switch (SortColumn)
+    //         {
+    //             case "CallSign":
+    //                 data = data.OrderBy(x => x.CallSign).ToArray();
+    //                 break;
+    //             case "LastUpdated":
+    //                 data = data.OrderBy(x => x.LastUpdated).ToArray();
+    //                 break;
+    //             case "ICAO":
+    //                 data = data.OrderBy(x => x.Icao24).ToArray();
+    //                 break;
+
+    //         }
+    //     }
+    //     else
+    //     {
+    //         ids = 0;
+
+    //         switch (SortColumn)
+    //         {
+    //             case "CallSign":
+    //                 data = data.OrderByDescending(x => x.CallSign).ToArray();
+    //                 break;
+    //             case "LastUpdated":
+    //                 data = data.OrderByDescending(x => x.LastUpdated).ToArray();
+    //                 break;
+    //             case "ICAO":
+    //                 data = data.OrderByDescending(x => x.Icao24).ToArray();
+    //                 break;
+
+    //         }
+    //     }
+    // }
+
+    //For Filtering by Student Name
+    async Task OnCallSignChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "CallSign");
+    }    
+    
+    // private async Task OnCallSignChanged(ChangeEventArgs args)
+    // {
+    //     string values = args.Value.ToString();
+    //     await filteringList(values, "CallSign");
+    // }
+
+
+    // For Filtering by Email
+    // async Task OnLastUpdatedChanged(ChangeEventArgs args)
+    // {
+    //     string values = args.Value.ToString();
+    //     // filteringList(values, "Email");
+    // }
+
+
+    // For Filtering by Phone
+    async Task OnICAOChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "ICAO");
+    }
+
+    // Filtering
+    protected async Task filteringList(String Value, string columnName)
+    {
+        data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("https://localhost:7249/api/AircraftStaticInfoes");
+
+        if (Value.Trim().Length > 0)
+        {
+            switch (columnName)
+            {
+                case "CallSign":
+                    data = data.Where(x => x.CallSign.Contains(Value)).ToArray();
+                    break;
+                // case "LastUpdated":
+                //     data = data.Where(x => x.LastUpdated.Contains(Value)).ToArray();
+                //     break;
+                case "ICAO":
+                    data = data.Where(x => x.Icao24.Contains(Value)).ToArray();
+                    break;
+                default:
+                    data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("https://localhost:7249/api/AircraftStaticInfoes");
+                    break;
+            }
+        }
+        else
+        {
+            data = await Http.GetFromJsonAsync<AircraftStaticInfo[]>("https://localhost:7249/api/AircraftStaticInfoes");
+        }
+    }
+
+
+    // public requestHandler _customerService { get; set; } = default!;
+
+    // private async Task<GridDataProviderResult<AircraftStaticInfo>> CustomersDataProvider(GridDataProviderRequest<AircraftStaticInfo> request)
+    // {
+    //     // string sortString = "";
+    //     // SortDirection sortDirection = SortDirection.None;
+
+    //     // if (request.Sorting is not null && request.Sorting.Any())
+    //     // {
+    //     //     // Note: Multi column sorting is not supported at this moment
+    //     //     sortString = request.Sorting.FirstOrDefault()!.SortString;
+    //     //     sortDirection = request.Sorting.FirstOrDefault()!.SortDirection;
+    //     // }
+    //     // var result = await _customerService.GetData(request.Filters, request.PageNumber, request.PageSize, sortString, sortDirection, request.CancellationToken);
+    //     var result = _customerService.GetData(request.Filters, request.PageNumber, request.PageSize, request.CancellationToken);
+    //     return await Task.FromResult(new GridDataProviderResult<AircraftStaticInfo> { Data = result, TotalCount = result.Count() });
+    // }
+
+    private WeatherForecast[]? forecasts;
+
+    // [Inject]
+    // public FlightDbContext context { get; set; }
+
+    // private static Random random = new Random();
+
+    // public static string GenerateRandomString(int length)
+    // {
+    //     const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    //     return new string(Enumerable.Repeat(chars, length)
+    //       .Select(s => s[random.Next(s.Length)]).ToArray());
+    // }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     // Simulate asynchronous loading to demonstrate streaming rendering
+    //     await Task.Delay(500);
+
+    //     var startDate = DateOnly.FromDateTime(DateTime.Now);
+    //     var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+    //     forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
+    //     {
+    //         Date = startDate.AddDays(index),
+    //         TemperatureC = Random.Shared.Next(-20, 55),
+    //         Summary = summaries[Random.Shared.Next(summaries.Length)]
+    //     }).ToArray();
+
+
+    //     // for (int i = 0; i < 1000; i++)
+    //     // {
+    //     //     var callSign = GenerateRandomString(10);
+    //     //     var lastupdated = DateTimeOffset.UtcNow;
+
+    //     //     var entity = new AircraftStaticInfo()
+    //     //         {
+    //     //             CallSign = callSign,
+    //     //             LastUpdated = DateTimeOffset.UtcNow,
+    //     //             Icao24 = GenerateRandomString(10)
+    //     //         };
+    //     //     context.Add(entity);
+    //     //     context.SaveChanges();
+    //     //         var entity2 = new AircraftDynamicInfo()
+    //     //             {
+    //     //                 CallSign = callSign,
+    //     //                 LastUpdated = lastupdated,
+    //     //                 Latitude = random.Next(100) + random.NextDouble(),
+    //     //                 Longitude = random.Next(100) + random.NextDouble(),
+    //     //                 Altitude = random.Next(5000) + random.NextDouble(),
+    //     //                 Direction = random.Next(100) + random.NextDouble()
+    //     //             };
+    //     //         context.Add(entity2);
+    //     //         context.SaveChanges();
+    //     //  }
+
+    // }
+
+    private class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+        public int TemperatureC { get; set; }
+        public string? Summary { get; set; }
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}
