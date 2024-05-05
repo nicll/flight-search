@@ -1,0 +1,217 @@
+﻿@page "/flightData"
+@using FlightDatabaseImportService
+@using FlightSearchService.Models.Internal
+@using FlightSearchWebService.Components.Model
+@using Microsoft.AspNetCore.Components
+@using Microsoft.JSInterop
+@inject HttpClient Http
+@attribute [StreamRendering]
+@rendermode InteractiveServer
+
+<PageTitle>Flight Data</PageTitle>
+
+<h1>Flight Data</h1>
+
+<p>This table shows all current Static and Dynamic flight data</p>
+
+@if (data == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table style="background-color:#FFFFFF; border-style:inset; border-width:1px; border-color:#6D7B8D; padding:2px; width:100%; table-layout:fixed;" cellpadding="1" cellspacing="1">
+        <tr style="background-color:#2d364d ; color:#FFFFFF ; border-style:dashed; border-width:2px; border-color:0A2464 ;">
+            <td width="30" align="center"></td>
+            <td width="80" align="center">
+                
+            </td>
+            <td width="120" align="center">
+                CallSign
+            </td>
+            <td width="120" align="center">
+                LastUpdated
+            </td>
+            <td width="120" align="center">
+                ICAO
+            </td>
+            <td width="120" align="center">
+                Latitude
+            </td>
+            <td width="120" align="center">
+                Longitude
+            </td>
+            <td width="120" align="center">
+                Altitude
+            </td>
+            <td width="120" align="center">
+                Direction
+            </td>
+        </tr>
+        <tr style="height: 30px; background-color:#336699 ; color:#FFFFFF ;">
+            <td width="30" align="center"></td>
+            <td width="80" align="center">Filter :</td>
+            <td width="60" align="center">
+                <input width="40" onchange="@OnCallSignChanged" />
+            </td>
+            <td width="60" align="center">
+                @* <input width="40" onchange=@OnLastUpdatedChanged/> *@
+            </td>
+            <td width="60" align="center">
+                <input width="40" onchange=@OnICAOChanged />
+            </td>
+            <td width="60" align="center">
+                <input width="40" onchange=@OnLatChanged />
+            </td>
+            <td width="60" align="center">
+                <input width="40" onchange=@OnLonChanged />
+            </td>
+             <td width="60" align="center">
+                <input width="40" onchange=@OnAltChanged />
+            </td>
+            <td width="60" align="center">
+                <input width="40" onchange=@OnDirChanged />
+            </td>
+        </tr>
+
+        @foreach (var singleData in data)
+        {
+            <tr style="border-style: dashed; border-width: 2px; border-color:#659EC7;">
+                <td align="center" style="border: solid 1px#659EC7; padding: 5px; table-layout: fixed;">
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.CallSign
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.LastUpdated
+                    </span>
+                </td>
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Icao24
+                    </span>
+                </td>                
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Latitude
+                    </span>
+                </td>                
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Longitude
+                    </span>
+                </td>                
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Altitude
+                    </span>
+                </td>                
+                <td align="center">
+                    <span style="color:#9F000F">
+                        @singleData.Direction
+                    </span>
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+
+
+@code {
+
+    AircraftCombined[] data;
+
+    int ids = 0;
+    int studentIDs = 0;
+
+    string Filter1 = "Test";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        data = await Http.GetFromJsonAsync<AircraftCombined[]>("https://localhost:7249/api/AircraftStaticInfoes");
+    }
+
+    async Task OnCallSignChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "CallSign");
+    }    
+
+    async Task OnICAOChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "ICAO");
+    }
+
+    async Task OnLatChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "Lat");
+    }
+
+    async Task OnLonChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "Lon");
+    }
+
+    async Task OnAltChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "Alt");
+    }
+
+    async Task OnDirChanged(ChangeEventArgs args)
+    {
+        string values = args.Value.ToString();
+        await filteringList(values, "Dir");
+    }
+
+    // Filtering
+    protected async Task filteringList(String Value, string columnName)
+    {
+        data = await Http.GetFromJsonAsync<AircraftCombined[]>("https://localhost:7249/api/AircraftStaticInfoes");
+
+        if (Value.Trim().Length > 0)
+        {
+            switch (columnName)
+            {
+                case "CallSign":
+                    data = data.Where(x => x.CallSign.Contains(Value)).ToArray();
+                    break;
+                case "ICAO":
+                    data = data.Where(x => x.Icao24.Contains(Value)).ToArray();
+                    break;
+                case "Lat":
+                    data = data.Where(x => x.Latitude.Contains(Value)).ToArray();
+                    break;
+                case "Lon":
+                    data = data.Where(x => x.Longitude.Contains(Value)).ToArray();
+                    break;
+                case "Alt":
+                    data = data.Where(x => x.Altitude.Contains(Value)).ToArray();
+                    break;
+                case "Dir":
+                    data = data.Where(x => x.Direction.Contains(Value)).ToArray();
+                    break;
+                default:
+                    data = await Http.GetFromJsonAsync<AircraftCombined[]>("https://localhost:7249/api/AircraftStaticInfoes");
+                    break;
+            }
+        }
+        else
+        {
+            data = await Http.GetFromJsonAsync<AircraftCombined[]>("https://localhost:7249/api/AircraftStaticInfoes");
+        }
+    }
+
+}

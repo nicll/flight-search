@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FlightDatabaseImportService;
 using FlightSearchService.Models.Internal;
+using FlightSearchWebService.Components.Model;
 
 namespace FlightSearchWebService.Components
 {
@@ -23,24 +24,42 @@ namespace FlightSearchWebService.Components
 
         // GET: api/AircraftStaticInfoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AircraftStaticInfo>>> GetAircraftStaticInfos()
+        public async Task<ActionResult<IEnumerable<AircraftCombined>>> GetAircraftStaticInfos()
         {
-            return await _context.AircraftStaticInfos.ToListAsync();
-        }
+            List<AircraftCombined> CombinedList = new List<AircraftCombined>();
+            var StaticList = await _context.AircraftStaticInfos.ToListAsync();
+            var DynamicList = await _context.AircraftDynamicInfos.ToListAsync();
 
-        // GET: api/AircraftStaticInfoes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AircraftStaticInfo>> GetAircraftStaticInfo(string id)
-        {
-            var aircraftStaticInfo = await _context.AircraftStaticInfos.FindAsync(id);
-
-            if (aircraftStaticInfo == null)
+            for (int i = 0; i < StaticList.Count; i++)
             {
-                return NotFound();
+                CombinedList.Add(new AircraftCombined()
+                {
+                    CallSign = StaticList[i].CallSign,
+                    LastUpdated = StaticList[i].LastUpdated.ToString().Substring(0, 19),
+                    Icao24 = StaticList[i].Icao24,
+                    Latitude = DynamicList[i].Latitude.ToString().Substring(0,10),
+                    Longitude = DynamicList[i].Longitude.ToString().Substring(0, 10),
+                    Altitude = DynamicList[i].Altitude.ToString().Substring(0, 10),
+                    Direction = DynamicList[i].Direction.ToString().Substring(0, 10)
+                });
             }
 
-            return aircraftStaticInfo;
+            return CombinedList;
         }
+
+        //// GET: api/AircraftStaticInfoes/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<AircraftStaticInfo>> GetAircraftStaticInfo(string id)
+        //{
+        //    var aircraftStaticInfo = await _context.AircraftStaticInfos.FindAsync(id);
+
+        //    if (aircraftStaticInfo == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return aircraftStaticInfo;
+        //}
 
    
     }
